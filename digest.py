@@ -1,3 +1,5 @@
+# 在文件顶部添加
+print(f"✅ DashScope API Key 已加载: {DASHSCOPE_API_KEY[:10]}...")
 import os
 import feedparser
 from datetime import datetime, timedelta
