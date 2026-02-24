@@ -21,7 +21,7 @@ dashscope.api_key = DASHSCOPE_API_KEY
 
 def get_videos_from_channels():
     youtube = build('youtube', 'v3', developerKey=YOUTUBE_API_KEY)
-    yesterday = (datetime.utcnow() - timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
+    yesterday = (datetime.utcnow() - timedelta(days=7)).strftime('%Y-%m-%dT%H:%M:%SZ')
     items = []
     for channel in YOUTUBE_CHANNELS:
         request = youtube.search().list(
