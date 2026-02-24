@@ -1,5 +1,3 @@
-# 在文件顶部添加
-print(f"✅ DashScope API Key 已加载: {DASHSCOPE_API_KEY[:10]}...")
 import os
 import feedparser
 from datetime import datetime, timedelta
@@ -20,6 +18,10 @@ EMAIL_PASSWORD = os.environ['EMAIL_PASSWORD']
 TO_EMAIL = os.environ['TO_EMAIL']
 
 dashscope.api_key = DASHSCOPE_API_KEY
+
+# ✅ 调试信息：确认密钥已加载（只显示前10位，避免泄露）
+print(f"✅ DashScope API Key 已加载: {DASHSCOPE_API_KEY[:10]}...")
+print(f"✅ YouTube API Key 前缀: {YOUTUBE_API_KEY[:10]}...")
 
 def get_videos_from_channels():
     youtube = build('youtube', 'v3', developerKey=YOUTUBE_API_KEY)
