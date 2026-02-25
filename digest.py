@@ -101,11 +101,11 @@ def analyze_with_expert_lens(context_desc: str, source_type: str = "未注明信
             model=MODEL_NAME,
             messages=[{"role": "user", "content": prompt}],
             max_tokens=MAX_TOKENS,
-            temperature=TEMPERATURE,
-            result_format='text'
+            temperature=TEMPERATURE
+            # 注意：没有 result_format！
         )
         if response.status_code == 200:
-            return response.output.text.strip()
+            return response.output.choices[0].message.content.strip()
         else:
             return f"（AI分析失败: {response.code} | {getattr(response, 'message', '')}）"
     except Exception as e:
