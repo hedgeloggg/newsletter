@@ -1,42 +1,64 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 """
-深度产业洞察生成器（Digest Generator - Expert Mode）
-基于你指定的「斯坦福博士 + NVIDIA 前顾问」角色模板，
-对 AI/芯片/科技领域内容进行严谨、有洞察力的结构化分析。
+深度产业洞察日报系统（完整生产版）
+- 抓取全球顶级科技信源
+- 调用 qwen3-max-2026-01-23 进行深度分析
+- 自动发送结构化邮件
 """
 
 import os
 import logging
-from typing import Optional
+from datetime import datetime, timedelta
+import feedparser
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import smtplib
+from typing import List, Dict
+
+# YouTube 依赖
+from googleapiclient.discovery import build
+from youtube_transcript_api import YouTubeTranscriptApi
+
+# DashScope
+import dashscope
+from dashscope import Generation
 
 # 配置日志
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
+# === 配置 ===
+YOUTUBE_API_KEY = os.environ['YOUTUBE_API_KEY']
+DASHSCOPE_API_KEY = os.environ['DASHSCOPE_API_KEY']
+EMAIL_USER = os.environ['EMAIL_USER']
+EMAIL_PASSWORD = os.environ['EMAIL_PASSWORD']
+TO_EMAIL = os.environ['TO_EMAIL']
 
-# ==============================
-# 核心函数：深度产业分析（使用你的专家 Prompt）
-# ==============================
-def analyze_with_expert_lens(
-    context_desc: str,
-    source_type: str = "未注明信源"
-) -> str:
-    """
-    使用指定的专家角色 prompt，对输入内容进行深度分析。
+dashscope.api_key = DASHSCOPE_API_KEY
+MODEL_NAME = 'qwen3-max-2026-01-23'
+MAX_TOKENS = 1200
+TEMPERATURE = 0.2
 
-    Args:
-        context_desc (str): 待分析的原始内容（如演讲节选、新闻稿、访谈实录）
-        source_type (str): 内容来源类型，如 "GTC 2026 主题演讲"、"财报电话会" 等
+# === 信源配置 ===
+YOUTUBE_CHANNELS = [
+    {"name": "OpenAI", "id": "UC8butISFwT-Wl7EV0hUK0BQ"},
+    {"name": "Google DeepMind", "id": "UC9uXsE4oZh8QH6xJp7xUjCw"},
+    {"name": "NVIDIA", "id": "UC9vRjuQx5V0Oc0hZ8M_7QjA"},
+    {"name": "Lex Fridman Podcast", "id": "UCSHZKyawb77ixDdsGog4iWA"},
+]
 
-    Returns:
-        str: 结构化分析报告（Markdown 格式）
-    """
-    # 构造专业级 Prompt（完全保留你提供的逻辑框架）
+RSS_FEEDS = [
+    "https://a16z.com/feed/",
+    "https://www.sequoiacap.com/articles/feed/",
+    "https://blog.ycombinator.com/rss/",
+    "https://karpathy.ai/feed.xml",
+    "https://openai.com/blog/rss/",
+]
+
+
+# === 核心分析函数 ===
+def analyze_with_expert_lens(context_desc: str, source_type: str = "未注明信源") -> str:
     prompt = f"""你是一位资深 AI 与芯片产业分析师，拥有斯坦福大学博士学位和 NVIDIA 前战略顾问经验。请基于以下内容，进行深度、严谨、有洞察力的分析。
 
 【输入内容类型】
@@ -74,78 +96,134 @@ def analyze_with_expert_lens(
    - ⚠️ 已知信息强化（重复强调但无新细节）  
    - ❓ 语义模糊（缺乏可验证内容）
 """
-
     try:
-        # TODO: 替换为你的实际 Qwen API 调用
-        # 示例（使用 DashScope）：
-        # from dashscope import Generation
-        # response = Generation.call(
-        #     model="qwen3-max-2026-01-23",
-        #     prompt=prompt,
-        #     api_key=os.getenv("DASHSCOPE_API_KEY"),
-        #     max_tokens=1500
-        # )
-        # return response.output.text.strip()
-
-        # 临时模拟输出（上线前务必替换！）
-        logger.warning("⚠️ 使用模拟深度分析（请接入真实 Qwen API）")
-        return f"""【核心主张提炼】  
-黄仁勋重申 Blackwell Ultra 将定义下一代 AI 基础设施。（技术路线宣示）
-
-【证据链拆解】  
-- 展示 B200 芯片 20 petaFLOPS FP4 性能（实测数据）  
-- 宣布 AWS、Azure、Oracle 全面采用 GB200 Superchip（商业落地案例）  
-- （推测）暗示 2027 年前不会推出光子芯片，因“电子互连仍具成本优势”
-
-【历史一致性检验】  
-□ 延续原有立场  
-理由：过去半年多次强调“AI 工厂”架构，本次进一步细化算力-网络-软件协同。
-
-【产业影响评估】  
-• AI 芯片竞争格局：AMD MI300X 生态压力加剧，需加速软件栈整合  
-• 云计算厂商策略：CSP 将更深度绑定 NVIDIA 全栈方案，自研芯片节奏或放缓
-
-【信息新颖性评级】  
-✅ 全新披露（首次公布 NVL72 机柜级功耗与液冷部署时间表）
-"""
-
-    except Exception as e:
-        logger.error(f"调用大模型失败: {e}")
-        return "[深度分析生成失败，请检查 API 配置]"
-
-
-# ==============================
-# 主流程
-# ==============================
-def main():
-    logger.info("🔍 启动深度产业洞察引擎... (模型: qwen3-max-2026-01-23)")
-
-    # 模拟输入（实际项目中应从数据库/RSS/API 获取）
-    sample_input = """
-在 GTC 2026 主题演讲中，黄仁勋宣布 Blackwell Ultra 架构将于 Q3 量产，
-并透露 NVL72 系统将在 2026 年底前完成全球主要云厂商部署。
-他强调：“未来的 AI 不再是模型之争，而是基础设施效率之争。”
-同时，NVIDIA 将开源部分 cuOpt 路径优化库，但保留核心通信栈闭源。
-"""
-
-    try:
-        report = analyze_with_expert_lens(
-            context_desc=sample_input.strip(),
-            source_type="GTC 2026 主题演讲"
+        response = Generation.call(
+            model=MODEL_NAME,
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=MAX_TOKENS,
+            temperature=TEMPERATURE,
+            result_format='text'
         )
-        print("\n" + "="*60)
-        print("🧠 深度产业分析报告")
-        print("="*60)
-        print(report)
-        print("="*60)
+        if response.status_code == 200:
+            return response.output.text.strip()
+        else:
+            return f"（AI分析失败: {response.code} | {getattr(response, 'message', '')}）"
     except Exception as e:
-        logger.error(f"主流程异常: {e}")
-
-    logger.info("✅ 深度分析完成！")
+        return f"（调用异常: {str(e)[:150]}）"
 
 
-# ==============================
-# 入口点
-# ==============================
+# === YouTube 抓取 ===
+def get_youtube_items() -> List[Dict]:
+    items = []
+    youtube = build('youtube', 'v3', developerKey=YOUTUBE_API_KEY)
+    
+    # 获取频道最新视频
+    for channel in YOUTUBE_CHANNELS:
+        request = youtube.search().list(
+            part="snippet",
+            channelId=channel["id"],
+            order="date",
+            type="video",
+            publishedAfter=(datetime.utcnow() - timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ'),
+            maxResults=2
+        )
+        response = request.execute()
+        
+        for item in response.get('items', []):
+            vid = item['id']['videoId']
+            title = item['snippet']['title']
+            link = f"https://www.youtube.com/watch?v={vid}"
+            
+            # 尝试获取字幕
+            transcript = None
+            try:
+                transcript_list = YouTubeTranscriptApi.get_transcript(vid, languages=['en', 'zh-Hans'])
+                transcript = ' '.join([t['text'] for t in transcript_list])
+            except:
+                pass
+            
+            content = transcript if transcript else f"标题：{title}\n\n描述：{item['snippet'].get('description', '')}"
+            summary = analyze_with_expert_lens(content, f"YouTube: {channel['name']}")
+            
+            items.append({
+                "source": channel["name"],
+                "title": title,
+                "link": link,
+                "summary": summary
+            })
+            logger.info(f"✅ 处理 YouTube: {title[:50]}...")
+    
+    return items
+
+
+# === RSS 抓取 ===
+def get_rss_items() -> List[Dict]:
+    items = []
+    for feed_url in RSS_FEEDS:
+        try:
+            feed = feedparser.parse(feed_url)
+            for entry in feed.entries[:2]:  # 每源取最新2篇
+                if hasattr(entry, 'published'):
+                    pub_date = datetime(*entry.published_parsed[:6])
+                    if pub_date < datetime.utcnow() - timedelta(days=1):
+                        continue
+                
+                title = entry.get('title', '无标题')
+                link = entry.get('link', '#')
+                content = entry.get('content', [{}])[0].get('value') or entry.get('summary', '')
+                
+                summary = analyze_with_expert_lens(content, "Blog/RSS")
+                items.append({
+                    "source": feed_url.split('/')[2],
+                    "title": title,
+                    "link": link,
+                    "summary": summary
+                })
+                logger.info(f"✅ 处理 RSS: {title[:50]}...")
+        except Exception as e:
+            logger.error(f"RSS 抓取失败 {feed_url}: {e}")
+    return items
+
+
+# === 邮件发送 ===
+def send_email(subject: str, items: List[Dict]):
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = subject
+    msg["From"] = EMAIL_USER
+    msg["To"] = TO_EMAIL
+
+    body = ""
+    for item in items:
+        body += f"来源：{item['source']}\n"
+        body += f"标题：{item['title']}\n"
+        body += f"链接：{item['link']}\n\n"
+        body += item['summary'] + "\n\n"
+        body += "──────────────────────────────\n\n"
+
+    msg.attach(MIMEText(body, "plain", "utf-8"))
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+        server.login(EMAIL_USER, EMAIL_PASSWORD)
+        server.sendmail(EMAIL_USER, TO_EMAIL, msg.as_string())
+    logger.info(f"📧 邮件已发送至 {TO_EMAIL}")
+
+
+# === 主流程 ===
+def main():
+    logger.info(f"🚀 启动深度日报 (模型: {MODEL_NAME})")
+    
+    all_items = []
+    all_items.extend(get_youtube_items())
+    all_items.extend(get_rss_items())
+    
+    if not all_items:
+        logger.warning("⚠️ 今日无新内容")
+        return
+    
+    subject = f"【深度日报】{datetime.now().strftime('%Y-%m-%d')} | {len(all_items)} 条高价值内容"
+    send_email(subject, all_items)
+    logger.info(f"✅ 完成！共处理 {len(all_items)} 条内容")
+
+
 if __name__ == "__main__":
     main()
