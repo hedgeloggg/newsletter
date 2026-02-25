@@ -89,9 +89,29 @@ def get_transcript(video_id):
     except:
         return None
 
-def summarize_with_qwen(title, content, source_type):
-    if not content or not content.strip():
-        return "（内容为空）"
+def summarize_with_qwen(title, content):
+    if not content or len(content.strip()) < 50:
+        return "（内容过短，无法分析）"
+    
+    full_prompt = PROMPT_TEMPLATE.format(
+        title=title[:200],
+        content=content[:12000]
+    )
+    
+    try:
+        response = Generation.call(
+            model=MODEL_NAME,
+            messages=[{"role": "user", "content": full_prompt}],  # 关键：用 messages
+            max_tokens=MAX_TOKENS,
+            temperature=TEMPERATURE,
+            result_format='text'
+        )
+        if response.status_code == 200:
+            return response.output.text.strip()
+        else:
+            return f"（AI分析失败: {response.code} | {getattr(response, 'message', '')}）"
+    except Exception as e:
+        return f"（调用异常: {str(e)[:150]}）"
     
     is_fallback = "标题：" in content and "\n\n描述：" in content
     context_desc = "含完整字幕的视频" if not is_fallback else "仅含标题与描述的视频（无字幕）"
