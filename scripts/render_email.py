@@ -1,10 +1,17 @@
 # scripts/render_email.py
 import os
+import sys
 import json
 import markdown
 from email.mime.text import MIMEText
 from email.header import Header
 import smtplib
+
+# === 注入 scripts 目录（保持一致性）===
+script_dir = os.path.dirname(os.path.abspath(__file__))
+if script_dir not in sys.path:
+    sys.path.insert(0, script_dir)
+# ======================================
 
 def render_html_report():
     if os.path.exists('output/analysis_results.json'):
