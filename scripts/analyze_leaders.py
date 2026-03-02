@@ -2,7 +2,7 @@
 import os
 import json
 from dashscope import Generation
-from .transcribe_video import get_transcript
+from transcribe_video import get_transcript
 
 def analyze_video(title, author, transcript):
     prompt = f"""你是一位顶级科技产业分析师。请对以下视频内容进行深度拆解：
