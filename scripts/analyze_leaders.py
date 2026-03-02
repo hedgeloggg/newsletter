@@ -2,6 +2,7 @@
 import os
 import json
 from dashscope import Generation
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '.'))
 from transcribe_video import get_transcript
 
 def analyze_video(title, author, transcript):
