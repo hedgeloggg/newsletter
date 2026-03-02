@@ -21,7 +21,7 @@ def analyze_video(title, author, transcript):
 要求：避免套话，用 bullet points，保持专业冷静。
 """
     response = Generation.call(
-        model='qwen-max-012026',
+        model='qwen-max-2026-01-23',
         prompt=prompt,
         api_key=os.getenv('DASHSCOPE_API_KEY'),
         max_tokens=2000,
