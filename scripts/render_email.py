@@ -41,7 +41,9 @@ def send_email(html_content):
     msg['Subject'] = Header("[AI 领袖洞察] 每日深度日报", 'utf-8')
     
     try:
-        server = smtplib.SMTP_SSL("smtp.qq.com", 465)
+        # ✅ 使用 Gmail SMTP
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
         server.login(os.getenv('EMAIL_USER'), os.getenv('EMAIL_PASSWORD'))
         server.sendmail(
             os.getenv('EMAIL_USER'),
@@ -49,7 +51,7 @@ def send_email(html_content):
             msg.as_string()
         )
         server.quit()
-        print("✅ Email sent successfully")
+        print("✅ Email sent successfully via Gmail")
     except Exception as e:
         print(f"📧 Email Error: {e}")
 
