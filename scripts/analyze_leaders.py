@@ -1,17 +1,3 @@
-# scripts/analyze_leaders.py
-import os
-import sys
-import json
-from dashscope import Generation
-
-# === 关键：注入 scripts 目录到 Python 路径 ===
-script_dir = os.path.dirname(os.path.abspath(__file__))
-if script_dir not in sys.path:
-    sys.path.insert(0, script_dir)
-# =========================================
-
-from transcribe_video import get_transcript  # ← 改为绝对导入（无点号）
-
 def analyze_video(title, author, transcript):
     prompt = f"""你是一位顶级科技产业分析师。请对以下视频内容进行深度拆解：
 
@@ -28,36 +14,29 @@ def analyze_video(title, author, transcript):
 
 要求：避免套话，用 bullet points，保持专业冷静。
 """
-    response = Generation.call(
-        model='qwen-max-2026-01-23',
-        prompt=prompt,
-        api_key=os.getenv('DASHSCOPE_API_KEY'),
-        max_tokens=2000,
-        temperature=0.3
-    )
-    return response.output.text.strip()
-
-def main():
-    with open('output/today_videos.json') as f:
-        videos = json.load(f)
-    
-    results = []
-    for video in videos:
-        print(f"Analyzing: {video['title']}")
-        transcript = get_transcript(video['video_id'])
-        analysis = analyze_video(video['title'], video['author'], transcript)
+    try:
+        response = Generation.call(
+            model='qwen-max-012026',
+            prompt=prompt,
+            api_key=os.getenv('DASHSCOPE_API_KEY'),
+            max_tokens=2000,
+            temperature=0.3,
+            timeout=30  # 防止长时间挂起
+        )
         
-        results.append({
-            'title': video['title'],
-            'url': video['url'],
-            'author': video['author'],
-            'analysis': analysis
-        })
-    
-    with open('output/analysis_results.json', 'w') as f:
-        json.dump(results, f, ensure_ascii=False, indent=2)
-    
-    print("✅ Analysis completed")
-
-if __name__ == '__main__':
-    main()
+        # ✅ 关键：检查响应是否成功
+        if response.status_code != 200 or not response.output:
+            error_msg = f"【API调用失败】Code: {getattr(response, 'code', 'Unknown')}, Message: {getattr(response, 'message', 'No message')}"
+            print(f"  ✘ {error_msg}")
+            return error_msg
+        
+        result = response.output.text.strip()
+        if not result:
+            return "【分析返回空结果】"
+        
+        return result
+        
+    except Exception as e:
+        error_msg = f"【AI分析异常】{str(e)[:150]}"
+        print(f"  ✘ {error_msg}")
+        return error_msg
