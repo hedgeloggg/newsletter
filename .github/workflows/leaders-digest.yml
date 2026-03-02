@@ -24,7 +24,7 @@ jobs:
       - name: Fetch new videos
         run: python fetch_videos.py
 
-      - name: Analyze with Qwen3-Max
+      - name: Analyze with qwen-max-2026-01-23
         run: python scripts/analyze_leaders.py
         env:
           DASHSCOPE_API_KEY: ${{ secrets.DASHSCOPE_API_KEY }}
