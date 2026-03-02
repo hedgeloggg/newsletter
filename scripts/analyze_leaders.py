@@ -1,9 +1,16 @@
 # scripts/analyze_leaders.py
 import os
+import sys
 import json
 from dashscope import Generation
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '.'))
-from transcribe_video import get_transcript
+
+# === 关键：注入 scripts 目录到 Python 路径 ===
+script_dir = os.path.dirname(os.path.abspath(__file__))
+if script_dir not in sys.path:
+    sys.path.insert(0, script_dir)
+# =========================================
+
+from transcribe_video import get_transcript  # ← 改为绝对导入（无点号）
 
 def analyze_video(title, author, transcript):
     prompt = f"""你是一位顶级科技产业分析师。请对以下视频内容进行深度拆解：
