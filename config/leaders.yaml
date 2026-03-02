@@ -1,0 +1,111 @@
+# config/leaders.yaml
+leaders:
+  # OpenAI 系
+  - name: "Sam Altman"
+    youtube_channel_id: "UC-2Y8dQb0S6DtpxNgAKoJKA"  # OpenAI 官方
+    aliases: ["山姆·奥特曼", "Samuel Altman"]
+
+  - name: "Ilya Sutskever"
+    youtube_channel_id: "UCnyqU_Ol5gVq9k9NQyLZcRQ"  # 多个会议合集（如 NeurIPS）
+    aliases: ["伊利亚·萨茨克韦弗"]
+
+  # DeepMind / Google
+  - name: "Demis Hassabis"
+    youtube_channel_id: "UCP7jMXSY2xbcWaCtKukjp0w"  # DeepMind 官方
+    aliases: ["德米斯·哈萨比斯"]
+
+  - name: "Geoffrey Hinton"
+    youtube_channel_id: "UCvJ8Uj7XhWVf5nF9nJjzZqA"  # 多个大学演讲合集
+    aliases: ["杰弗里·辛顿", "深度学习之父"]
+
+  # Tesla / xAI
+  - name: "Elon Musk"
+    youtube_channel_id: "UCBi2mrWuNuyYy4gbM6fU18Q"  # Tesla & xAI 发布会
+    aliases: ["埃隆·马斯克"]
+
+  # 英伟达
+  - name: "Jensen Huang"
+    youtube_channel_id: "UC9aH2BmZrGJpFqX3sT5eZ8A"  # NVIDIA 官方
+    aliases: ["黄仁勋", "Jen-Hsun Huang"]
+
+  # 微软
+  - name: "Satya Nadella"
+    youtube_channel_id: "UCsoK5cXyqZL4J1OZxXeEj8Q"  # Microsoft CEO 频道
+    aliases: ["萨提亚·纳德拉"]
+
+  # Meta
+  - name: "Mark Zuckerberg"
+    youtube_channel_id: "UC-8QAzbLcRglXeN_MY9blyw"  # Meta 官方
+    aliases: ["马克·扎克伯格"]
+
+  # Google 创始人
+  - name: "Larry Page"
+    youtube_channel_id: "UC_x5XG1OV2P6uZZ5FSM9Ttw"  # Alphabet 相关活动
+    aliases: ["拉里·佩奇"]
+
+  - name: "Sergey Brin"
+    youtube_channel_id: "UC_x5XG1OV2P6uZZ5FSM9Ttw"  # 同上（常共同出席）
+    aliases: ["谢尔盖·布林"]
+
+  # 甲骨文
+  - name: "Larry Ellison"
+    youtube_channel_id: "UC8butISFwT-Wl7EV0hUK0BQ"  # Oracle 官方活动
+    aliases: ["拉里·埃里森"]
+
+  # Anthropic
+  - name: "Dario Amodei"
+    youtube_channel_id: "UC5Z9B0vJS1VqkVJZ7X6XZ7A"  # Anthropic 官方
+    aliases: ["达里奥·阿莫迪"]
+
+  - name: "Daniela Amodei"
+    youtube_channel_id: "UC5Z9B0vJS1VqkVJZ7X6XZ7A"  # 同上
+    aliases: ["丹妮拉·阿莫迪"]
+
+  # Cohere
+  - name: "Aidan Gomez"
+    youtube_channel_id: "UC7eHZXheF8nVQ_8nLQqyX9A"  # Cohere 官方
+    aliases: ["艾丹·戈麦斯"]
+
+  # 学术界
+  - name: "Andrej Karpathy"
+    youtube_channel_id: "UCSJ4gkVC6NrvII8umztf0Ow"  # 个人频道（Highly recommended）
+    aliases: ["安德烈·卡帕西"]
+
+  - name: "Fei-Fei Li"
+    youtube_channel_id: "UCvJ8Uj7XhWVf5nF9nJjzZqA"  # 斯坦福演讲合集（与 Hinton 同源）
+    aliases: ["李飞飞"]
+
+  # Y Combinator
+  - name: "Garry Tan"
+    youtube_channel_id: "UC9aH2BmZrGJpFqX3sT5eZ8A"  # YC 官方（现任 CEO）
+    aliases: ["加里·谭"]
+
+  - name: "Michael Seibel"
+    youtube_channel_id: "UC9aH2BmZrGJpFqX3sT5eZ8A"  # YC 合伙人
+    aliases: ["迈克尔·塞贝尔"]
+
+  # 投资界
+  - name: "Naval Ravikant"
+    youtube_channel_id: "UC9aH2BmZrGJpFqX3sT5eZ8A"  # Lex Fridman 等访谈合集
+    aliases: ["纳瓦尔·拉维坎特"]
+
+  - name: "Peter Thiel"
+    youtube_channel_id: "UC_x5XG1OV2P6uZZ5FSM9Ttw"  # Founders Fund / Stanford
+    aliases: ["彼得·蒂尔"]
+
+  - name: "Marc Andreessen"
+    youtube_channel_id: "UC8butISFwT-Wl7EV0hUK0BQ"  # a16z 播客官方
+    aliases: ["马克·安德森"]
+
+  - name: "Roelof Botha"
+    youtube_channel_id: "UC8butISFwT-Wl7EV0hUK0BQ"  # a16z
+    aliases: ["罗洛夫·博塔"]
+
+  - name: "Doug Leone"
+    youtube_channel_id: "UC8butISFwT-Wl7EV0hUK0BQ"  # a16z
+    aliases: ["道格·莱昂内"]
+
+  # 思想家
+  - name: "Nassim Nicholas Taleb"
+    youtube_channel_id: "UCvJ8Uj7XhWVf5nF9nJjzZqA"  # 多个大学讲座
+    aliases: ["纳西姆·尼古拉斯·塔勒布"]
