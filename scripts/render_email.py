@@ -26,7 +26,7 @@ def render_html_report():
     md += "> *由 GitHub Actions + Qwen3-Max (2026) 自动生成*\n\n"
     
     if not results:
-        md += "📅 **过去 100 天内未发现相关深度内容**\n\n"
+        md += "📅 **过去 1 天内未发现相关深度内容**\n\n"
         md += "系统已扫描 YouTube、Apple Podcasts、Spotify 等平台的 30+ 权威信源。\n"
     else:
         for item in results:
