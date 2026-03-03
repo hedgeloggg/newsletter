@@ -31,6 +31,10 @@ def main():
     channel_id = leader['youtube_channel_id']
     feed_url = f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
     
+for leader in config['leaders']:
+    channel_id = leader['youtube_channel_id']
+    feed_url = f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
+    
     try:
         print(f"Fetching from {leader['name']}...")
         feed = feedparser.parse(feed_url)
