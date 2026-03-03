@@ -27,33 +27,42 @@ def main():
         with open('output/history.json') as f:
             seen_ids = set(json.load(f))
     
-    for leader in config['leaders']:
-        channel_id = leader['youtube_channel_id']
-        feed_url = f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
-        
-        try:
-            print(f"Fetching from {leader['name']}...")
-            feed = feedparser.parse(feed_url)
-            for entry in feed.entries:
-                pub_date = datetime.strptime(entry.published[:19], "%Y-%m-%dT%H:%M:%S")
-                if pub_date < datetime.utcnow() - timedelta(days=1):
-                    continue
-                
-                video_id = get_video_id(entry.link)
-                if not video_id or video_id in seen_ids:
-                    continue
-                
-                all_videos.append({
-                    'title': entry.title,
-                    'url': f"https://youtu.be/{video_id}",
-                    'author': leader['name'],
-                    'published': entry.published,
-                    'video_id': video_id
-                })
-                seen_ids.add(video_id)
-                print(f"  → New: {entry.title}")
-        except Exception as e:
-            print(f"  ✘ Error: {e}")
+   for leader in config['leaders']:
+    channel_id = leader['youtube_channel_id']
+    feed_url = f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
+    
+    try:
+        print(f"Fetching from {leader['name']}...")
+        feed = feedparser.parse(feed_url)
+        for entry in feed.entries:
+            # ✅ 正确解析 UTC 时间
+            pub_str = entry.published
+            if pub_str.endswith('Z'):
+                pub_str = pub_str[:-1] + '+00:00'
+            pub_date = datetime.fromisoformat(pub_str)
+            if pub_date.tzinfo is None:
+                pub_date = pub_date.replace(tzinfo=timezone.utc)
+            
+            # ✅ 使用 UTC 当前时间
+            cutoff = datetime.now(timezone.utc) - timedelta(days=7)
+            if pub_date < cutoff:
+                continue
+            
+            video_id = get_video_id(entry.link)
+            if not video_id or video_id in seen_ids:
+                continue
+            
+            all_videos.append({
+                'title': entry.title,
+                'url': f"https://youtu.be/{video_id}",
+                'author': leader['name'],
+                'published': entry.published,
+                'video_id': video_id
+            })
+            seen_ids.add(video_id)
+            print(f"  → New: {entry.title}")
+    except Exception as e:
+        print(f"  ✘ Error: {e}")
     
     # Save history
     os.makedirs('output', exist_ok=True)
