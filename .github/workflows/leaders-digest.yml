@@ -34,7 +34,7 @@ jobs:
         run: python scripts/merge_sources.py
 
       # ✅ Step 4: 分析统一内容（需确保 analyze_leaders.py 读取 output/unified_today.json）
-      - name: Analyze with qwen-max-2026-01-23
+      - name: Analyze with qwen-max
         run: python scripts/analyze_leaders.py
         env:
           DASHSCOPE_API_KEY: ${{ secrets.DASHSCOPE_API_KEY }}
