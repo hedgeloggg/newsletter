@@ -20,7 +20,7 @@ def translate_to_chinese(text):
 """
     try:
         response = Generation.call(
-            model='qwen-max-2026-01-23',
+            model='qwen-max',
             prompt=prompt,
             api_key=os.getenv('DASHSCOPE_API_KEY'),
             max_tokens=2000
