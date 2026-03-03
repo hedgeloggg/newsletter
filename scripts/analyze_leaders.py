@@ -1,16 +1,13 @@
-# scripts/analyze_leaders.py 开头应为：
-input_file = 'output/unified_today.json'
-if not os.path.exists(input_file):
-    print("⚠️ No unified data. Exiting.")
-    sys.exit(0)  # 不报错退出
-    
-def analyze_video(title, author, transcript):
-    prompt = f"""你是一位顶级科技产业分析师。请对以下视频内容进行深度拆解：
+# scripts/analyze_leaders.py
+import os
+import json
+import sys
+from dashscope import Generation
 
-【视频标题】{title}
-【主讲人】{author}
-【全文转录】{transcript}
-
+def analyze_item(title, author):
+    prompt = f"""你是一位资深AI与科技趋势分析师，请用中文对以下内容进行深度解读（150字以内）：
+标题：{title}
+来源：{author}
 请严格按以下结构输出（中文）：
 1. **核心论点**（≤3条，每条≤50字）
 2. **证据链拆解**（技术/数据/逻辑支撑）
@@ -18,31 +15,54 @@ def analyze_video(title, author, transcript):
 4. **产业影响评估**（对AI芯片/模型/应用/监管的影响，分短期<1年、长期>3年）
 5. **潜在风险提示**（技术滥用、夸大宣传、逻辑漏洞等）
 
-要求：避免套话，用 bullet points，保持专业冷静。
-"""
+要求：聚焦技术战略、行业影响或思想洞见，避免客套话。"""
+    
     try:
         response = Generation.call(
-            model='qwen-max-012026',
+            model="qwen-max-2026-01-23",
             prompt=prompt,
-            api_key=os.getenv('DASHSCOPE_API_KEY'),
-            max_tokens=2000,
-            temperature=0.3,
-            timeout=30  # 防止长时间挂起
+            api_key=os.getenv("DASHSCOPE_API_KEY"),
+            timeout=30
         )
-        
-        # ✅ 关键：检查响应是否成功
-        if response.status_code != 200 or not response.output:
-            error_msg = f"【API调用失败】Code: {getattr(response, 'code', 'Unknown')}, Message: {getattr(response, 'message', 'No message')}"
-            print(f"  ✘ {error_msg}")
-            return error_msg
-        
-        result = response.output.text.strip()
-        if not result:
-            return "【分析返回空结果】"
-        
-        return result
-        
+        if response.status_code == 200:
+            return response.output.text.strip()
+        else:
+            return f"[Qwen API error: {response.code}]"
     except Exception as e:
-        error_msg = f"【AI分析异常】{str(e)[:150]}"
-        print(f"  ✘ {error_msg}")
-        return error_msg
+        return f"[分析异常: {str(e)[:80]}]"
+
+def main():
+    input_file = 'output/unified_today.json'
+    
+    # 检查文件是否存在
+    if not os.path.exists(input_file):
+        print("⚠️ unified_today.json not found. Skipping analysis.")
+        sys.exit(0)
+    
+    # 读取数据
+    with open(input_file, 'r', encoding='utf-8') as f:
+        items = json.load(f)
+    
+    if not items:
+        print("📭 No items to analyze.")
+        sys.exit(0)
+    
+    print(f"🧠 Starting analysis for {len(items)} items...")
+    
+    # 逐个分析
+    for i, item in enumerate(items):
+        title = item.get('title', '')
+        author = item.get('author', '')
+        print(f"  {i+1}. Analyzing: {title[:50]}...")
+        
+        analysis = analyze_item(title, author)
+        item['analysis'] = analysis
+    
+    # 写回文件
+    with open(input_file, 'w', encoding='utf-8') as f:
+        json.dump(items, f, ensure_ascii=False, indent=2)
+    
+    print("✅ Analysis completed and saved.")
+
+if __name__ == '__main__':
+    main()
