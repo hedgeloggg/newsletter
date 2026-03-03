@@ -21,14 +21,25 @@ jobs:
           pip install --upgrade pip
           pip install pyyaml feedparser youtube-transcript-api markdown dashscope requests
 
-      - name: Fetch new videos
+      # ✅ Step 1: 抓取 YouTube 视频（原逻辑保留）
+      - name: Fetch YouTube Videos
         run: python fetch_videos.py
 
+      # ✅ Step 2: 新增 —— 抓取播客、博客、文章（Apple/Spotify/Medium/TED 等）
+      - name: Fetch Podcasts and Articles
+        run: python scripts/fetch_podcasts.py
+
+      # ✅ Step 3: 新增 —— 合并视频 + 播客，去重
+      - name: Merge All Sources into Unified List
+        run: python scripts/merge_sources.py
+
+      # ✅ Step 4: 分析统一内容（需确保 analyze_leaders.py 读取 output/unified_today.json）
       - name: Analyze with qwen-max-2026-01-23
         run: python scripts/analyze_leaders.py
         env:
           DASHSCOPE_API_KEY: ${{ secrets.DASHSCOPE_API_KEY }}
 
+      # ✅ Step 5: 发送邮件（render_email.py 已适配 unified_today.json）
       - name: Send beautiful email
         run: python scripts/render_email.py
         env:
