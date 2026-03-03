@@ -13,9 +13,11 @@ if script_dir not in sys.path:
     sys.path.insert(0, script_dir)
 # ======================================
 
+# scripts/render_email.py （仅修改 render_html_report 函数）
 def render_html_report():
-    if os.path.exists('output/analysis_results.json'):
-        with open('output/analysis_results.json') as f:
+    # ✅ 读取合并后的统一数据
+    if os.path.exists('output/unified_today.json'):
+        with open('output/unified_today.json') as f:
             results = json.load(f)
     else:
         results = []
@@ -24,13 +26,16 @@ def render_html_report():
     md += "> *由 GitHub Actions + Qwen3-Max (2026) 自动生成*\n\n"
     
     if not results:
-        md += "📅 **今日无新增视频**\n\n"
-        md += "系统已检查以下领袖的 YouTube 频道，过去 24 小时无新内容发布。\n"
+        md += "📅 **过去 100 天内未发现相关深度内容**\n\n"
+        md += "系统已扫描 YouTube、Apple Podcasts、Spotify 等平台的 30+ 权威信源。\n"
     else:
         for item in results:
-            md += f"## 🔹 [{item['title']}]({item['url']})\n"
-            md += f"**主讲人**：{item['author']}\n\n"
-            md += item['analysis'] + "\n---\n\n"
+            # 标注来源类型
+            source_tag = "🎧" if item.get('source_type') == 'podcast' else "🎥"
+            md += f"## {source_tag} [{item['title']}]({item['url']})\n"
+            md += f"**来源**：{item['author']}\n\n"
+            # 注意：analysis 字段由 analyze_leaders.py 生成
+            md += item.get('analysis', "*分析生成中...*") + "\n---\n\n"
     
     return markdown.markdown(md, extensions=['extra', 'nl2br'])
 
