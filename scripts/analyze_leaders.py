@@ -4,6 +4,13 @@ import json
 import sys
 from dashscope import Generation
 
+def clean_text(text):
+    """清理文本，移除控制字符，确保 API 安全"""
+    if not isinstance(text, str):
+        text = str(text)
+    return ''.join(c for c in text if ord(c) >= 32 or c in '\n\r\t')
+...
+
 def analyze_item(title, author):
     prompt = f"""你是一位资深AI与科技趋势分析师，请用中文对以下内容进行深度解读（150字以内）：
 标题：{title}
@@ -19,7 +26,7 @@ def analyze_item(title, author):
     
     try:
         response = Generation.call(
-            model="qwen-max-2026-01-23",
+            model="qwen-max",
             prompt=prompt,
             api_key=os.getenv("DASHSCOPE_API_KEY"),
             timeout=30
