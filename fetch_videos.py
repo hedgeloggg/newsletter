@@ -27,7 +27,7 @@ def main():
         with open('output/history.json') as f:
             seen_ids = set(json.load(f))
     
-   for leader in config['leaders']:
+    for leader in config['leaders']:
     channel_id = leader['youtube_channel_id']
     feed_url = f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
     
