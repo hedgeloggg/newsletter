@@ -1,3 +1,9 @@
+# scripts/analyze_leaders.py 开头应为：
+input_file = 'output/unified_today.json'
+if not os.path.exists(input_file):
+    print("⚠️ No unified data. Exiting.")
+    sys.exit(0)  # 不报错退出
+    
 def analyze_video(title, author, transcript):
     prompt = f"""你是一位顶级科技产业分析师。请对以下视频内容进行深度拆解：
 
