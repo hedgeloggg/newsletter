@@ -56,7 +56,7 @@ def main():
         with open('output/history.json') as f:
             seen_ids = set(json.load(f))
     
-    cutoff = datetime.now(timezone.utc) - timedelta(days=7)  # ← 7天！
+    cutoff = datetime.now(timezone.utc) - timedelta(days=1)  # ← 1天！
     
     for source in sources:
         try:
