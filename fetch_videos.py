@@ -46,7 +46,7 @@ def main():
                     pub_date = pub_date.replace(tzinfo=timezone.utc)
                 
                 # Check if within last 7 days (UTC)
-                cutoff = datetime.now(timezone.utc) - timedelta(days=100)
+                cutoff = datetime.now(timezone.utc) - timedelta(days=7)
                 if pub_date < cutoff:
                     continue
                 
