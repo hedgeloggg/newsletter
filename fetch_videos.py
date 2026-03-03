@@ -6,7 +6,6 @@ import feedparser
 from datetime import datetime, timedelta, timezone
 from urllib.parse import urlparse, parse_qs
 
-
 def get_video_id(url):
     u = urlparse(url)
     if u.hostname == 'youtu.be':
@@ -16,11 +15,15 @@ def get_video_id(url):
             return parse_qs(u.query)['v'][0]
     return None
 
+def load_sources():
+    with open('config/sources.yaml') as f:
+        config = yaml.safe_load(f)
+    # 只取 YouTube 类型的信源
+    youtube_sources = [s for s in config['sources'] if s.get('type') == 'youtube']
+    return config['keywords'], youtube_sources
 
 def main():
-    with open('config/leaders.yaml') as f:
-        config = yaml.safe_load(f)
-    
+    keywords, sources = load_sources()
     all_videos = []
     seen_ids = set()
     
@@ -29,15 +32,15 @@ def main():
         with open('output/history.json') as f:
             seen_ids = set(json.load(f))
     
-    for leader in config['leaders']:
-        channel_id = leader['youtube_channel_id']
-        feed_url = f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
-        
+    cutoff = datetime.now(timezone.utc) - timedelta(days=7)  # ← 7天！
+    
+    for source in sources:
         try:
-            print(f"Fetching from {leader['name']}...")
-            feed = feedparser.parse(feed_url)
+            print(f"🎥 Fetching from {source['name']}...")
+            feed = feedparser.parse(source['rss_url'])
+            
             for entry in feed.entries:
-                # Parse UTC time correctly
+                # Parse published time (YouTube RSS is UTC)
                 pub_str = entry.published
                 if pub_str.endswith('Z'):
                     pub_str = pub_str[:-1] + '+00:00'
@@ -45,8 +48,6 @@ def main():
                 if pub_date.tzinfo is None:
                     pub_date = pub_date.replace(tzinfo=timezone.utc)
                 
-                # Check if within last 7 days (UTC)
-                cutoff = datetime.now(timezone.utc) - timedelta(days=7)
                 if pub_date < cutoff:
                     continue
                 
@@ -54,29 +55,46 @@ def main():
                 if not video_id or video_id in seen_ids:
                     continue
                 
+                # Match keywords in title + summary
+                title = entry.title.lower()
+                summary = getattr(entry, 'summary', '').lower()
+                content = title + ' ' + summary
+                
+                matched = any(kw.lower() in content for kw in keywords)
+                if not matched:
+                    continue
+                
                 all_videos.append({
                     'title': entry.title,
                     'url': f"https://youtu.be/{video_id}",
-                    'author': leader['name'],
+                    'author': source['name'],
                     'published': entry.published,
-                    'video_id': video_id
+                    'video_id': video_id,
+                    'source_type': 'youtube'
                 })
                 seen_ids.add(video_id)
-                print(f"  → New: {entry.title}")
+                print(f"  → Matched: {entry.title[:60]}...")
+                
         except Exception as e:
-            print(f"  ✘ Error: {e}")
-    
-    # Save history
-    os.makedirs('output', exist_ok=True)
-    with open('output/history.json', 'w') as f:
-        json.dump(list(seen_ids), f)
+            print(f"  ✘ Error fetching {source['name']}: {e}")
     
     # Save today's videos
+    os.makedirs('output', exist_ok=True)
     with open('output/today_videos.json', 'w') as f:
         json.dump(all_videos, f, ensure_ascii=False, indent=2)
     
-    print(f"\n✅ Found {len(all_videos)} new videos")
-
+    # Update history (merge with podcast IDs later in merge_sources.py)
+    if os.path.exists('output/history.json'):
+        with open('output/history.json') as f:
+            existing_ids = set(json.load(f))
+    else:
+        existing_ids = set()
+    existing_ids.update(seen_ids)
+    
+    with open('output/history.json', 'w') as f:
+        json.dump(list(existing_ids), f)
+    
+    print(f"\n✅ Found {len(all_videos)} relevant YouTube videos in last 100 days")
 
 if __name__ == '__main__':
     main()
