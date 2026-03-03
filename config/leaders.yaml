@@ -1,111 +1,188 @@
-# config/leaders.yaml
-leaders:
-  # OpenAI 系
-  - name: "Sam Altman"
-    youtube_channel_id: "UC-2Y8dQb0S6DtpxNgAKoJKA"  # OpenAI 官方
-    aliases: ["山姆·奥特曼", "Samuel Altman"]
+# config/sources.yaml
+# 跨平台 AI 领袖内容追踪系统 - 终版配置 (2026)
 
-  - name: "Ilya Sutskever"
-    youtube_channel_id: "UCnyqU_Ol5gVq9k9NQyLZcRQ"  # 多个会议合集（如 NeurIPS）
-    aliases: ["伊利亚·萨茨克韦弗"]
+# =============== 第一部分：关键词库（中英双语）===============
+keywords:
+  # 人物（英文 + 中文别名）
+  - "Sam Altman"
+  - "山姆·奥特曼"
+  - "Elon Musk"
+  - "埃隆·马斯克"
+  - "Demis Hassabis"
+  - "德米斯·哈萨比斯"
+  - "Jensen Huang"
+  - "黄仁勋"
+  - "Satya Nadella"
+  - "萨提亚·纳德拉"
+  - "Geoffrey Hinton"
+  - "杰弗里·辛顿"
+  - "Ilya Sutskever"
+  - "伊利亚·萨茨克韦弗"
+  - "Andrej Karpathy"
+  - "安德烈·卡帕西"
+  - "Dario Amodei"
+  - "达里奥·阿莫迪"
+  - "Fei-Fei Li"
+  - "李飞飞"
+  - "Yann LeCun"
+  - "杨立昆"
+  - "Andrew Ng"
+  - "吴恩达"
 
-  # DeepMind / Google
-  - name: "Demis Hassabis"
-    youtube_channel_id: "UCP7jMXSY2xbcWaCtKukjp0w"  # DeepMind 官方
-    aliases: ["德米斯·哈萨比斯"]
+  # 机构/组织
+  - "OpenAI"
+  - "xAI"
+  - "DeepMind"
+  - "Google DeepMind"
+  - "Anthropic"
+  - "Cohere"
+  - "NVIDIA"
+  - "英伟达"
+  - "Microsoft"
+  - "微软"
+  - "Meta"
+  - "Tesla"
+  - "特斯拉"
+  - "Y Combinator"
+  - "YC"
+  - "a16z"
+  - "Andreessen Horowitz"
+  - "Stanford"
+  - "斯坦福"
+  - "MIT"
+  - "麻省理工"
 
-  - name: "Geoffrey Hinton"
-    youtube_channel_id: "UCvJ8Uj7XhWVf5nF9nJjzZqA"  # 多个大学演讲合集
-    aliases: ["杰弗里·辛顿", "深度学习之父"]
+  # 媒体/栏目
+  - "TechCrunch"
+  - "TED"
+  - "Lex Fridman"
+  - "All-In Podcast"
+  - "Masters of Scale"
+  - "The Generalist"
+  - "Stratechery"
+  - "Paul Graham"
+  - "Fred Wilson"
+  - "Bill Gurley"
+  - "Mark Suster"
+  - "Lenny Rachitsky"
+  - "Dwarkesh Patel"
+  - "Harry Stebbings"
+  - "Ben Thompson"
+  - "Mario Gabriele"
 
-  # Tesla / xAI
-  - name: "Elon Musk"
-    youtube_channel_id: "UCBi2mrWuNuyYy4gbM6fU18Q"  # Tesla & xAI 发布会
-    aliases: ["埃隆·马斯克"]
+# =============== 第二部分：信源列表（含 RSS）===============
+sources:
+  # 🔹 YouTube 频道（高质量采访/发布会）
+  - name: "Lex Fridman Podcast"
+    type: youtube
+    rss_url: "https://www.youtube.com/feeds/videos.xml?channel_id=UCSHZKyawb77ixDdsGog4iWA"
 
-  # 英伟达
-  - name: "Jensen Huang"
-    youtube_channel_id: "UC9aH2BmZrGJpFqX3sT5eZ8A"  # NVIDIA 官方
-    aliases: ["黄仁勋", "Jen-Hsun Huang"]
+  - name: "CNBC Television"
+    type: youtube
+    rss_url: "https://www.youtube.com/feeds/videos.xml?channel_id=UCvJJ_cZsqXVd9VgQWz6cCcg"
 
-  # 微软
-  - name: "Satya Nadella"
-    youtube_channel_id: "UCsoK5cXyqZL4J1OZxXeEj8Q"  # Microsoft CEO 频道
-    aliases: ["萨提亚·纳德拉"]
+  - name: "Wall Street Journal"
+    type: youtube
+    rss_url: "https://www.youtube.com/feeds/videos.xml?channel_id=UC_XB9UOYxJkF5bP8NwLqR7A"
 
-  # Meta
-  - name: "Mark Zuckerberg"
-    youtube_channel_id: "UC-8QAzbLcRglXeN_MY9blyw"  # Meta 官方
-    aliases: ["马克·扎克伯格"]
+  - name: "Stanford Online"
+    type: youtube
+    rss_url: "https://www.youtube.com/feeds/videos.xml?channel_id=UCdKG2JVLgJnVjHmNXl4aT9Q"
 
-  # Google 创始人
-  - name: "Larry Page"
-    youtube_channel_id: "UC_x5XG1OV2P6uZZ5FSM9Ttw"  # Alphabet 相关活动
-    aliases: ["拉里·佩奇"]
+  - name: "MIT OpenCourseWare"
+    type: youtube
+    rss_url: "https://www.youtube.com/feeds/videos.xml?channel_id=UCEBb1b_L6zDS3xTUrIALZOw"
 
-  - name: "Sergey Brin"
-    youtube_channel_id: "UC_x5XG1OV2P6uZZ5FSM9Ttw"  # 同上（常共同出席）
-    aliases: ["谢尔盖·布林"]
+  - name: "NVIDIA"
+    type: youtube
+    rss_url: "https://www.youtube.com/feeds/videos.xml?channel_id=UC9aH2BmZrGJpFqX3sT5eZ8A"
 
-  # 甲骨文
-  - name: "Larry Ellison"
-    youtube_channel_id: "UC8butISFwT-Wl7EV0hUK0BQ"  # Oracle 官方活动
-    aliases: ["拉里·埃里森"]
+  - name: "Tesla"
+    type: youtube
+    rss_url: "https://www.youtube.com/feeds/videos.xml?channel_id=UCBi2mrWuNuyYy4gbM6fU18Q"
 
-  # Anthropic
-  - name: "Dario Amodei"
-    youtube_channel_id: "UC5Z9B0vJS1VqkVJZ7X6XZ7A"  # Anthropic 官方
-    aliases: ["达里奥·阿莫迪"]
+  - name: "Google Cloud Tech"
+    type: youtube
+    rss_url: "https://www.youtube.com/feeds/videos.xml?channel_id=UCJS9pqu9BpXCVKX-9UaEwkg"
 
-  - name: "Daniela Amodei"
-    youtube_channel_id: "UC5Z9B0vJS1VqkVJZ7X6XZ7A"  # 同上
-    aliases: ["丹妮拉·阿莫迪"]
+  # 🔹 播客 RSS（Apple/Spotify/Overcast/Pocket Casts 通用）
+  - name: "a16z Podcast"
+    type: podcast
+    rss_url: "https://a16z.simplecast.com/podcast/4a7b5c9d/rss"
 
-  # Cohere
-  - name: "Aidan Gomez"
-    youtube_channel_id: "UC7eHZXheF8nVQ_8nLQqyX9A"  # Cohere 官方
-    aliases: ["艾丹·戈麦斯"]
+  - name: "Masters of Scale"
+    type: podcast
+    rss_url: "https://rss.mastersofscale.com/"
 
-  # 学术界
-  - name: "Andrej Karpathy"
-    youtube_channel_id: "UCSJ4gkVC6NrvII8umztf0Ow"  # 个人频道（Highly recommended）
-    aliases: ["安德烈·卡帕西"]
+  - name: "All-In Podcast"
+    type: podcast
+    rss_url: "https://allinpodcast.com/feed.xml"
 
-  - name: "Fei-Fei Li"
-    youtube_channel_id: "UCvJ8Uj7XhWVf5nF9nJjzZqA"  # 斯坦福演讲合集（与 Hinton 同源）
-    aliases: ["李飞飞"]
+  - name: "The Twenty Minute VC (20VC)"
+    type: podcast
+    rss_url: "https://feeds.megaphone.fm/20vc"
 
-  # Y Combinator
-  - name: "Garry Tan"
-    youtube_channel_id: "UC9aH2BmZrGJpFqX3sT5eZ8A"  # YC 官方（现任 CEO）
-    aliases: ["加里·谭"]
+  - name: "The Dwarkesh Podcast"
+    type: podcast
+    rss_url: "https://dwarkesh.substack.com/feed/podcast/"
 
-  - name: "Michael Seibel"
-    youtube_channel_id: "UC9aH2BmZrGJpFqX3sT5eZ8A"  # YC 合伙人
-    aliases: ["迈克尔·塞贝尔"]
+  - name: "Lenny's Podcast"
+    type: podcast
+    rss_url: "https://lenne.substack.com/feed/podcast/"
 
-  # 投资界
-  - name: "Naval Ravikant"
-    youtube_channel_id: "UC9aH2BmZrGJpFqX3sT5eZ8A"  # Lex Fridman 等访谈合集
-    aliases: ["纳瓦尔·拉维坎特"]
+  - name: "The Generalist Podcast"
+    type: podcast
+    rss_url: "https://thegeneralist.substack.com/feed/podcast/"
 
-  - name: "Peter Thiel"
-    youtube_channel_id: "UC_x5XG1OV2P6uZZ5FSM9Ttw"  # Founders Fund / Stanford
-    aliases: ["彼得·蒂尔"]
+  - name: "This Week in Startups"
+    type: podcast
+    rss_url: "https://thisweekinstartups.com/feed/"
 
-  - name: "Marc Andreessen"
-    youtube_channel_id: "UC8butISFwT-Wl7EV0hUK0BQ"  # a16z 播客官方
-    aliases: ["马克·安德森"]
+  - name: "AVC - Fred Wilson"
+    type: podcast
+    rss_url: "https://avc.com/feed/"
 
-  - name: "Roelof Botha"
-    youtube_channel_id: "UC8butISFwT-Wl7EV0hUK0BQ"  # a16z
-    aliases: ["罗洛夫·博塔"]
+  - name: "Above the Crowd - Bill Gurley"
+    type: podcast
+    rss_url: "https://abovethecrowd.com/feed/"
 
-  - name: "Doug Leone"
-    youtube_channel_id: "UC8butISFwT-Wl7EV0hUK0BQ"  # a16z
-    aliases: ["道格·莱昂内"]
+  - name: "Both Sides of the Table - Mark Suster"
+    type: podcast
+    rss_url: "https://bothsidesofthetable.com/feed/"
 
-  # 思想家
-  - name: "Nassim Nicholas Taleb"
-    youtube_channel_id: "UCvJ8Uj7XhWVf5nF9nJjzZqA"  # 多个大学讲座
-    aliases: ["纳西姆·尼古拉斯·塔勒布"]
+  - name: "Paul Graham Essays (YC)"
+    type: podcast  # 实际是博客，但可用 RSS
+    rss_url: "http://paulgraham.com/rss.xml"
+
+  - name: "Stratechery by Ben Thompson"
+    type: podcast
+    rss_url: "https://stratechery.com/feed/"
+
+  - name: "Medium - The Generalist"
+    type: podcast
+    rss_url: "https://mariogabriele.medium.com/feed"
+
+  - name: "Medium - AI & Tech Top Writers"
+    type: podcast
+    rss_url: "https://medium.com/feed/tag/artificial-intelligence"
+
+  - name: "TechCrunch"
+    type: podcast
+    rss_url: "https://techcrunch.com/feed/"
+
+  - name: "TED Talks (Technology)"
+    type: podcast
+    rss_url: "https://feeds.feedburner.com/tedtalks_technology"
+
+  - name: "Y Combinator Blog"
+    type: podcast
+    rss_url: "https://blog.ycombinator.com/rss/"
+
+  # 🔹 补充：高价值独立信源
+  - name: "Noam Brown (FAIR/Meta)"
+    type: youtube
+    rss_url: "https://www.youtube.com/feeds/videos.xml?channel_id=UCqFEjKSAcl_1QVnI9VhVZ5g"  # 示例，可替换
+
+  - name: "Pieter Abbeel (Berkeley)"
+    type: youtube
+    rss_url: "https://www.youtube.com/feeds/videos.xml?channel_id=UCfTkYFVgpAQo6hIrQ1pLQrg"
