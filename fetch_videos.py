@@ -84,7 +84,7 @@ def main():
                 summary = getattr(entry, 'summary', '').lower()
                 content = title + ' ' + summary
                 
-                matched = any(kw.lower() in content for kw in keywords)
+                matched = is_relevant(content, keywords)
                 if not matched:
                     continue
                 
