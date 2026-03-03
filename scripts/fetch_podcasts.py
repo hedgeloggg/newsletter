@@ -3,8 +3,32 @@ import os
 import json
 import yaml
 import feedparser
+import re
 from datetime import datetime, timedelta, timezone
 
+def is_relevant(content: str, keywords: list) -> bool:
+    """
+    精准匹配：确保关键词作为完整单词出现（避免 'AI' 匹配到 'Guitarists'）
+    支持中英文（中文无空格，所以用子串；英文用 word boundary）
+    """
+    content_lower = content.lower()
+    
+    for kw in keywords:
+        kw_lower = kw.lower()
+        if not kw_lower.strip():
+            continue
+        
+        # 中文 or 无空格关键词 → 直接子串匹配
+        if not any(c.isalpha() and c.isascii() for c in kw_lower):
+            if kw_lower in content_lower:
+                return True
+        else:
+            # 英文关键词 → 用正则 \b 边界
+            pattern = r'\b' + re.escape(kw_lower) + r'\b'
+            if re.search(pattern, content_lower):
+                return True
+    return False
+    
 def load_sources():
     with open('config/sources.yaml') as f:
         config = yaml.safe_load(f)
@@ -49,7 +73,7 @@ def main():
                 summary = getattr(entry, 'summary', '').lower()
                 content = title + ' ' + summary
                 
-                matched = any(kw.lower() in content for kw in keywords)
+                matched = is_relevant(content, keywords)
                 if not matched:
                     continue
                 
