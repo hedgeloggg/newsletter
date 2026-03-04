@@ -1,6 +1,5 @@
 - name: Log current time (UTC)
   run: date -u
-  
 name: AI Leaders Video Digest
 
 on:
