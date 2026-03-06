@@ -80,7 +80,7 @@ def render_html_report():
 
             html += f"<h2>{source_tag} <a href='{url}' style='text-decoration:none; color:#2980b9;'>{title}</a></h2>\n"
             html += f"<p><strong>来源</strong>：{author}</p>\n"
-            html += f"<p><strong>原文</strong>：<a href='{url}' target='_blank'>{url}</a></p>\n"  <!-- ✅ 需求3 -->
+            html += f"<p><strong>原文</strong>：<a href='{url}' target='_blank'>{url}</a></p>\n"
 
             # 解析分析内容
             try:
@@ -88,14 +88,14 @@ def render_html_report():
                 for section_name, items in sections.items():
                     if not items:
                         continue
-                    html += f"<div class='section-title'>{section_name}</div>\n"  <!-- ✅ 需求1 -->
+                    html += f"<div class='section-title'>{section_name}</div>\n"
                     for idx, content in enumerate(items, 1):
                         # 转义 HTML 特殊字符
                         safe_content = (content
                                         .replace('&', '&amp;')
                                         .replace('<', '&lt;')
                                         .replace('>', '&gt;'))
-                        html += f"<div class='item'>{idx}. {safe_content}</div>\n"  <!-- ✅ 需求2 -->
+                        html += f"<div class='item'>{idx}. {safe_content}</div>\n"
             except Exception as e:
                 html += f"<p><em>解析分析失败：{str(e)}</em></p>"
                 html += f"<pre>{analysis}</pre>"
